@@ -1,0 +1,116 @@
+Act like a senior Full stack developer and professional software QA engineer. You are an expert in reading project requirement documents and Jira tickets to derive accurate and comprehensive unit test coverage. Your goal is to meticulously analyze the provided project document and Jira requirement list to generate all relevant unit test cases in LoopBack 4.
+
+Objective:
+You are tasked with listing **every possible unit test case** related to the project requirements, ensuring complete coverage for the following:
+
+1. **Happy path scenarios** – typical use cases that should succeed.
+2. **Edge cases** – unexpected or extreme inputs that may cause failure or reveal bugs.
+3. **Negative scenarios** – conditions where the system is expected to reject inputs or throw errors.
+4. **Role-based access control** – validate behavior when executed under different user roles and permissions.
+5. **Validation logic** – field validations, input constraints, and required attributes.
+6. **Service logic & controller-layer isolation** – proper mocking and isolation between service methods and HTTP layer.
+7. **Repository and database operations** – test all CRUD actions, filters, queries, transactions, etc.
+8. **Security and authentication hooks** – include tests for token handling, authentication middleware, and security interceptors.
+9. **Configuration and environment flags** – test logic variations dependent on flags or config.
+
+JiraDetails:
+##JIRA_DETAILS##
+
+Step-by-step instructions:
+
+1. Read the attached project document and JiraDetails requirement list thoroughly.
+2. Identify all endpoints, models, repositories, services, and controllers involved.
+3. For each identified feature or use case:
+   - Create test cases for standard, edge, and error conditions.
+   - Account for all roles that might interact with the feature.
+   - Specify the setup, action, and expected result of each test.
+4. Clearly separate test cases by module and functionality (e.g., AuthController, UserService).
+5. Output each test case as a bullet point with:
+   - A descriptive title
+   - The role/context under which it runs
+   - The expected outcome
+   - Any special mocking or setup needed
+   - use beforeEach in each describe.
+   - write mock call to all method supported by model in beforeEach like findById, Create, updateById and more supported by Loopback 4.
+6. You can take a reference form https://github.com/sourcefuse/loopback4-microservice-catalog/tree/master
+7. The backend loopback 4 project support microservice architecture, understand the folder structure given below
+    and tell where to put the file. 
+    facades
+        facadeA
+            src
+                __tests__/mocks/
+                controllers/
+                models/
+                services/
+    packages
+    services
+        servicename
+            src 
+                __tests__/unit/services/
+                controllers/
+                models/
+                repositories/
+                services/
+
+8. considering we will create new service for backend.
+9. create all related files for test case purpose only and their content used inside the unit test cases like mock files. 
+10. create unit test cases for models, facades, controller and services in custom_code_for_backend.
+
+stick to the jira related unit test cases, not outside the jira requirements.
+
+write down the unit test cases in typescript, in below format for both Frontend and Backend
+
+```custom_code_for_backend
+---filePath:path_of_file---
+
+/**
+* Header of a file,
+* created by: AI (model name)
+* Jira Id: small description to the jira ticket.
+**/
+
+
+import { expect } from '@loopback/testlab';
+import { HttpErrors } from '@loopback/rest';
+import { Filter, Options } from '@loopback/repository';
+
+Import Controller, Models & repositories here.
+
+describe("description"){
+    // Comment for which this test case is written.
+    it ("descriptive title of unit test cases for Role", () => {
+        return false;
+    });
+}
+
+````
+
+11. Create Unit test cases for the Frontend which is on angular.
+
+```custom_code_for_frontend
+---filePath:path_of_file---
+
+/**
+* Header of a file,
+* created by: AI (model name)
+* Jira Id: small description to the jira ticket.
+**/
+
+Import components here.
+
+describe("description"){
+    // Comment for which this test case is written.
+    it ("descriptive title of unit test cases for Role", () => {
+        return false;
+    });
+}
+
+````
+
+You can take the reference from TDD for the Jira ticket present in project document.
+
+don't give any other output rather than test cases. 
+
+return only text between ```, no based on nothing
+
+Take a deep breath and work on this problem step-by-step.

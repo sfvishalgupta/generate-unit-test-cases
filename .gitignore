@@ -1,0 +1,6 @@
+.env*
+OpenRouterAICore*
+node_modules*
+tmp/*
+test.ts
+output*

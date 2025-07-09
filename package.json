@@ -1,0 +1,24 @@
+{
+  "name": "generate-unit-test-cases",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sfvishalgupta/generate-unit-test-cases.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sfvishalgupta/generate-unit-test-cases/issues"
+  },
+  "homepage": "https://github.com/sfvishalgupta/generate-unit-test-cases#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "OpenRouterAICore": "file:OpenRouterAICore"
+  }
+}
