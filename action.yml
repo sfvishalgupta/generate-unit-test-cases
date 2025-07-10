@@ -30,11 +30,14 @@ inputs:
         required: true
         default: 'https://your-jira-instance.atlassian.net'
     JIRA_URL_OUTPUT:
-        required: true
+        default: ''
+        required: false
     JIRA_EMAIL_OUTPUT:
-        required: true
+        default: ''
+        required: false
     JIRA_API_TOKEN_OUTPUT:
-        required: true
+        default: ''
+        required: false
     JIRA_SPACE_KEY_OUTPUT:
         default: 'MyTestSpac'
         required: false
@@ -162,14 +165,8 @@ runs:
               git config --local user.email "github-actions[bot]@users.noreply.github.com"
               git config --local user.name "github-actions[bot]"
               git status
-              git add output_*
+              git add output
               git commit -am "added Unit test cases"
               git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
               git push origin HEAD:${GITHUB_REF_NAME}
         
-        - name: Create PR
-          shell: bash
-          env:
-            GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-          run: |
-            gh pr create --title "Created Unit Test Cases" --body "This is an automated PR" --head ${GITHUB_REF_NAME} --base main
