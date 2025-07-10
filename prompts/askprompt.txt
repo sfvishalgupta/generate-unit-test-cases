@@ -1,4 +1,7 @@
-Act like a senior Full stack developer and professional software QA engineer. You are an expert in reading project requirement documents and Jira tickets to derive accurate and comprehensive unit test coverage. Your goal is to meticulously analyze the provided project document and Jira requirement list to generate all relevant unit test cases in LoopBack 4.
+Act like a senior Full stack developer and professional software QA engineer. 
+You are an expert in reading project requirement documents and Jira tickets to derive accurate and 
+comprehensive unit test coverage. 
+Your goal is to meticulously analyze the provided project document and Jira requirement list to generate all relevant unit test cases in LoopBack 4.
 
 Objective:
 You are tasked with listing **every possible unit test case** related to the project requirements, ensuring complete coverage for the following:
@@ -54,58 +57,35 @@ Step-by-step instructions:
 
 8. considering we will create new service for backend.
 9. create all related files for test case purpose only and their content used inside the unit test cases like mock files. 
-10. create unit test cases for models, facades, controller and services in custom_code_for_backend.
+10. I need unit test cases in typescript.
+    otherwise it will not considered as good unit test cases.
+    it should be descriptive enough and should be created separate inside the typescript block for each models, facades, controller, services, helpers etc...
+    do not limit yourself for writing all related test cases.
+    here facade is used for aggregator pattern.
+```typescript
+---filePath:path_of_file---
+
+    /**
+    * Header of a file,
+    * created by: AI (model name)
+    * Jira Id: small description to the jira ticket.
+    **/
+    import { expect } from '@loopback/testlab';
+    import { HttpErrors } from '@loopback/rest';
+    import { Filter, Options } from '@loopback/repository';
+
+    Import Controller, Models & repositories here.
+
+    describe("description"){
+        // Comment for which this test case is written.
+        it ("descriptive title of unit test cases for Role", () => {
+            return false;
+        });
+    }
+
+````
 
 stick to the jira related unit test cases, not outside the jira requirements.
-
-write down the unit test cases in typescript, in below format for both Frontend and Backend
-
-```custom_code_for_backend
----filePath:path_of_file---
-
-/**
-* Header of a file,
-* created by: AI (model name)
-* Jira Id: small description to the jira ticket.
-**/
-
-
-import { expect } from '@loopback/testlab';
-import { HttpErrors } from '@loopback/rest';
-import { Filter, Options } from '@loopback/repository';
-
-Import Controller, Models & repositories here.
-
-describe("description"){
-    // Comment for which this test case is written.
-    it ("descriptive title of unit test cases for Role", () => {
-        return false;
-    });
-}
-
-````
-
-11. Create Unit test cases for the Frontend which is on angular.
-
-```custom_code_for_frontend
----filePath:path_of_file---
-
-/**
-* Header of a file,
-* created by: AI (model name)
-* Jira Id: small description to the jira ticket.
-**/
-
-Import components here.
-
-describe("description"){
-    // Comment for which this test case is written.
-    it ("descriptive title of unit test cases for Role", () => {
-        return false;
-    });
-}
-
-````
 
 You can take the reference from TDD for the Jira ticket present in project document.
 
