@@ -1,177 +1,176 @@
-name: 'Generate Unit Test Cases'
-description: 'A GitHub Action to check the quality of unit test cases via OpenRouterAI/Gemini.'
+name: "Generate Unit Test Cases"
+description: "A GitHub Action to check the quality of unit test cases via OpenRouterAI/Gemini."
 inputs:
-    GITHUB_TOKEN:
-        required: true
-    USE_FOR:
-        description: 'The type of test to use for quality checking.'
-        default: 'GenerateTestCasesReport_API'
-        required: false
-    JIRA_API_TOKEN:
-        description: 'The JIRA API token for authentication.'
-        required: true
-    JIRA_EMAIL:
-        description: 'The JIRA email for authentication.'
-        required: true
-    JIRA_FETCH_FIELDS:
-        description: 'Fields to fetch from JIRA.'
-        required: false
-        default: 'summary,description,customfield_10000'
-    JIRA_MAX_RESULT:
-        description: 'Maximum number of results to fetch from JIRA.'
-        required: false
-        default: '100'
-    JIRA_PROJECT_KEY:
-        description: 'The JIRA project key to filter issues.'
-        required: true
-        default: ''
-    CONFLUENCE_URL:
-        description: 'The CONFLUENCE_URL instance URL.'
-        required: false
-        default: ''
-    JIRA_URL:
-        description: 'The JIRA instance URL.'
-        required: true
-        default: ''
-    JIRA_URL_OUTPUT:
-        default: ''
-        required: false
-    JIRA_EMAIL_OUTPUT:
-        default: ''
-        required: false
-    JIRA_API_TOKEN_OUTPUT:
-        default: ''
-        required: false
-    JIRA_SPACE_KEY_OUTPUT:
-        default: 'MyTestSpac'
-        required: false
-    OPEN_ROUTER_API_KEY:
-        description: 'The OpenRouter API key for authentication.'
-    OPEN_ROUTER_API_URL:
-        required: false
-        description: 'The OpenRouter API URL.'
-        default: 'https://openrouter.ai/api/v1'
-    OPEN_ROUTER_MODEL:
-        description: 'The OpenRouter model to use for generating test cases.'
-        default: 'openrouter-ai-model' # Replace with your actual model name
-    REPORT_FILE_PATH:
-        description: 'The file path to save the report.'
-        required: false
-        default: 'coverage/ut-results.json'
-    DOCKER_USERNAME:
-        description: 'The Docker username for authentication.'
-        required: true
-    DOCKER_PASSWORD:
-        description: 'The Docker password for authentication.'
-        required: true
-    AWS_ACCESS_KEY:
-        description: 'AWS Access Key for authentication.'
-        required: false
-        default: ''
-    AWS_SECRET_KEY:
-        description: 'AWS Secret Key for authentication.'
-        required: false
-        default: ''
-    AWS_REGION:
-        description: 'AWS Region for the service.'
-        required: false
-        default: 'us-east-1' # Adjust as necessary
-    AWS_S3_BUCKET:
-        description: 'AWS S3 bucket name for storing reports.'
-        required: false
-        default: '' # Adjust as necessary
-    PROJECT_DOCUMENT_PATH:
-        description: 'The path to the project documentation.'
-        required: false
-        default: '' # Adjust as necessary
-    S3_BUCKET_NAME:
-        description: 'The name of the S3 bucket to store the report.'
-        required: false
-        default: '' # Adjust as necessary
+  GITHUB_TOKEN:
+    required: true
+  USE_FOR:
+    description: "The type of test to use for quality checking."
+    default: "GenerateTestCasesReport_API"
+    required: false
+  JIRA_API_TOKEN:
+    description: "The JIRA API token for authentication."
+    required: true
+  JIRA_EMAIL:
+    description: "The JIRA email for authentication."
+    required: true
+  JIRA_FETCH_FIELDS:
+    description: "Fields to fetch from JIRA."
+    required: false
+    default: "summary,description,customfield_10000"
+  JIRA_MAX_RESULT:
+    description: "Maximum number of results to fetch from JIRA."
+    required: false
+    default: "100"
+  JIRA_PROJECT_KEY:
+    description: "The JIRA project key to filter issues."
+    required: true
+    default: ""
+  CONFLUENCE_URL:
+    description: "The CONFLUENCE_URL instance URL."
+    required: false
+    default: ""
+  JIRA_URL:
+    description: "The JIRA instance URL."
+    required: true
+    default: ""
+  JIRA_URL_OUTPUT:
+    default: ""
+    required: false
+  JIRA_EMAIL_OUTPUT:
+    default: ""
+    required: false
+  JIRA_API_TOKEN_OUTPUT:
+    default: ""
+    required: false
+  JIRA_SPACE_KEY_OUTPUT:
+    default: "MyTestSpac"
+    required: false
+  OPEN_ROUTER_API_KEY:
+    description: "The OpenRouter API key for authentication."
+  OPEN_ROUTER_API_URL:
+    required: false
+    description: "The OpenRouter API URL."
+    default: "https://openrouter.ai/api/v1"
+  OPEN_ROUTER_MODEL:
+    description: "The OpenRouter model to use for generating test cases."
+    default: "openrouter-ai-model" # Replace with your actual model name
+  REPORT_FILE_PATH:
+    description: "The file path to save the report."
+    required: false
+    default: "coverage/ut-results.json"
+  DOCKER_USERNAME:
+    description: "The Docker username for authentication."
+    required: true
+  DOCKER_PASSWORD:
+    description: "The Docker password for authentication."
+    required: true
+  AWS_ACCESS_KEY:
+    description: "AWS Access Key for authentication."
+    required: false
+    default: ""
+  AWS_SECRET_KEY:
+    description: "AWS Secret Key for authentication."
+    required: false
+    default: ""
+  AWS_REGION:
+    description: "AWS Region for the service."
+    required: false
+    default: "us-east-1" # Adjust as necessary
+  AWS_S3_BUCKET:
+    description: "AWS S3 bucket name for storing reports."
+    required: false
+    default: "" # Adjust as necessary
+  PROJECT_DOCUMENT_PATH:
+    description: "The path to the project documentation."
+    required: false
+    default: "" # Adjust as necessary
+  S3_BUCKET_NAME:
+    description: "The name of the S3 bucket to store the report."
+    required: false
+    default: "" # Adjust as necessary
 
 outputs:
-    comment_body:
-        description: 'The body of the output from the OpenRouterAI script.'
+  comment_body:
+    description: "The body of the output from the OpenRouterAI script."
 
 permissions:
-    pull-requests: write
-    issues: write
+  pull-requests: write
+  issues: write
 
 runs:
-    using: 'composite' # or 'node20' if you prefer
-    steps:
-        - name: Create timestamp and export to env
-          id: timestamp
-          shell: bash
-          run: |
-              echo "TIMESTAMP=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+  using: "composite" # or 'node20' if you prefer
+  steps:
+    - name: Create timestamp and export to env
+      id: timestamp
+      shell: bash
+      run: |
+        echo "TIMESTAMP=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
 
-        - name: Setup OpenRouterAPI
-          shell: bash
-          run: |
-              cd ${{ github.action_path }}
-              if [ ! -d "OpenRouterAICore" ]; then
-                  git clone --depth=1 https://github.com/sfvishalgupta/OpenRouterAICore.git OpenRouterAICore
-                  cd OpenRouterAICore && npm install && cd .. && npm install
-              fi
+    - name: Setup OpenRouterAPI
+      shell: bash
+      run: |
+        cd ${{ github.action_path }}
+        if [ ! -d "OpenRouterAICore" ]; then
+            git clone --depth=1 https://github.com/sfvishalgupta/OpenRouterAICore.git OpenRouterAICore
+            cd OpenRouterAICore && npm install && cd .. && npm install
+        fi
 
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-        - name: docker login
-          shell: bash
-          run: |
-              echo "Port 6333 is not open"
-              sudo docker login -u "${{inputs.DOCKER_USERNAME}}" -p "${{inputs.DOCKER_PASSWORD}}" docker.io
-              docker pull mcr.microsoft.com/presidio-analyzer:latest
-              docker pull mcr.microsoft.com/presidio-anonymizer:latest
+    - name: docker login
+      shell: bash
+      run: |
+        echo "Port 6333 is not open"
+        sudo docker login -u "${{inputs.DOCKER_USERNAME}}" -p "${{inputs.DOCKER_PASSWORD}}" docker.io
+        docker pull mcr.microsoft.com/presidio-analyzer:latest
+        docker pull mcr.microsoft.com/presidio-anonymizer:latest
 
-              docker run -d -p 5001:3000 mcr.microsoft.com/presidio-anonymizer:latest
-              docker run -d -p 5002:3000 mcr.microsoft.com/presidio-analyzer:latest
-              docker run -d -p 6333:6333 qdrant/qdrant
+        docker run -d -p 5001:3000 mcr.microsoft.com/presidio-anonymizer:latest
+        docker run -d -p 5002:3000 mcr.microsoft.com/presidio-analyzer:latest
+        docker run -d -p 6333:6333 qdrant/qdrant
 
-        - name: Run Node.js logic
-          id: run-get-ut-test-cases-open-router-ai
-          shell: bash
-          env:
-              AWS_ACCESS_KEY: ${{ inputs.AWS_ACCESS_KEY || '' }}
-              AWS_REGION: ${{ inputs.AWS_REGION || 'us-east-1' }}
-              AWS_S3_BUCKET: ${{ inputs.AWS_S3_BUCKET || '' }}
-              AWS_SECRET_KEY: ${{ inputs.AWS_SECRET_KEY || '' }}
-              GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number || 'main' }}
-              GITHUB_OWNER: ${{ github.repository_owner }}
-              GITHUB_REPO: ${{ github.event.repository.name }}
-              GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-              JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
-              JIRA_EMAIL: ${{inputs.JIRA_EMAIL}}
-              JIRA_FETCH_FIELDS: ${{inputs.JIRA_FETCH_FIELDS}}
-              JIRA_MAX_RESULT: ${{inputs.JIRA_MAX_RESULT}}
-              JIRA_PROJECT_KEY: ${{inputs.JIRA_PROJECT_KEY}}
-              JIRA_TICKET_ID: ${{ github.event.ref }}
-              JIRA_URL: ${{inputs.JIRA_URL}}
-              CONFLUENCE_URL: ${{inputs.CONFLUENCE_URL}}
-              JIRA_URL_OUTPUT: ${{inputs.JIRA_URL_OUTPUT}}
-              JIRA_EMAIL_OUTPUT: ${{inputs.JIRA_EMAIL_OUTPUT}}
-              JIRA_API_TOKEN_OUTPUT: ${{inputs.JIRA_API_TOKEN_OUTPUT}}
-              JIRA_SPACE_KEY_OUTPUT: ${{inputs.JIRA_SPACE_KEY_OUTPUT}}
-              OPEN_ROUTER_API_KEY: ${{inputs.OPEN_ROUTER_API_KEY}}
-              OPEN_ROUTER_API_URL: ${{inputs.OPEN_ROUTER_API_URL}}
-              OPEN_ROUTER_MODEL: ${{inputs.OPEN_ROUTER_MODEL}}
-              PRESIDIO_ANALYZE_URL: 'http://localhost:5002/analyze'
-              PRESIDIO_ANONYMIZE_URL: 'http://localhost:5001/anonymize'
-              PROJECT_DOCUMENT_PATH: ${{ inputs.PROJECT_DOCUMENT_PATH || '' }}
-              REPORT_FILE_PATH: ${{ inputs.REPORT_FILE_PATH || '' }}
-              S3_BUCKET_NAME: ${{ inputs.S3_BUCKET_NAME || '' }}
-              USE_FOR: ${{ inputs.USE_FOR }}
-              VECTOR_STORE_TYPE: 'QDRANT'
-              VECTOR_STORE_URL: 'http://127.0.0.1:6333'
-          run: |
-              npx ts-node ${{ github.action_path }}/main.ts
-              git config --local user.email "github-actions[bot]@users.noreply.github.com"
-              git config --local user.name "github-actions[bot]"
-              git status
-              git add output
-              git commit -am "added Unit test cases"
-              git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-              git push origin HEAD:${GITHUB_REF_NAME}
-        
+    - name: Run Node.js logic
+      id: run-get-ut-test-cases-open-router-ai
+      shell: bash
+      env:
+        AWS_ACCESS_KEY: ${{ inputs.AWS_ACCESS_KEY || '' }}
+        AWS_REGION: ${{ inputs.AWS_REGION || 'us-east-1' }}
+        AWS_S3_BUCKET: ${{ inputs.AWS_S3_BUCKET || '' }}
+        AWS_SECRET_KEY: ${{ inputs.AWS_SECRET_KEY || '' }}
+        GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number || 'main' }}
+        GITHUB_OWNER: ${{ github.repository_owner }}
+        GITHUB_REPO: ${{ github.event.repository.name }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
+        JIRA_EMAIL: ${{inputs.JIRA_EMAIL}}
+        JIRA_FETCH_FIELDS: ${{inputs.JIRA_FETCH_FIELDS}}
+        JIRA_MAX_RESULT: ${{inputs.JIRA_MAX_RESULT}}
+        JIRA_PROJECT_KEY: ${{inputs.JIRA_PROJECT_KEY}}
+        JIRA_TICKET_ID: ${{ github.event.ref }}
+        JIRA_URL: ${{inputs.JIRA_URL}}
+        CONFLUENCE_URL: ${{inputs.CONFLUENCE_URL}}
+        JIRA_URL_OUTPUT: ${{inputs.JIRA_URL_OUTPUT}}
+        JIRA_EMAIL_OUTPUT: ${{inputs.JIRA_EMAIL_OUTPUT}}
+        JIRA_API_TOKEN_OUTPUT: ${{inputs.JIRA_API_TOKEN_OUTPUT}}
+        JIRA_SPACE_KEY_OUTPUT: ${{inputs.JIRA_SPACE_KEY_OUTPUT}}
+        OPEN_ROUTER_API_KEY: ${{inputs.OPEN_ROUTER_API_KEY}}
+        OPEN_ROUTER_API_URL: ${{inputs.OPEN_ROUTER_API_URL}}
+        OPEN_ROUTER_MODEL: ${{inputs.OPEN_ROUTER_MODEL}}
+        PRESIDIO_ANALYZE_URL: "http://localhost:5002/analyze"
+        PRESIDIO_ANONYMIZE_URL: "http://localhost:5001/anonymize"
+        PROJECT_DOCUMENT_PATH: ${{ inputs.PROJECT_DOCUMENT_PATH || '' }}
+        REPORT_FILE_PATH: ${{ inputs.REPORT_FILE_PATH || '' }}
+        S3_BUCKET_NAME: ${{ inputs.S3_BUCKET_NAME || '' }}
+        USE_FOR: ${{ inputs.USE_FOR }}
+        VECTOR_STORE_TYPE: "QDRANT"
+        VECTOR_STORE_URL: "http://127.0.0.1:6333"
+      run: |
+        npx ts-node ${{ github.action_path }}/main.ts
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git status
+        git add output
+        git commit -am "added Unit test cases"
+        git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        git push origin HEAD:${GITHUB_REF_NAME}
