@@ -25,10 +25,14 @@ inputs:
         description: 'The JIRA project key to filter issues.'
         required: true
         default: ''
+    CONFLUENCE_URL:
+        description: 'The CONFLUENCE_URL instance URL.'
+        required: false
+        default: ''
     JIRA_URL:
         description: 'The JIRA instance URL.'
         required: true
-        default: 'https://your-jira-instance.atlassian.net'
+        default: ''
     JIRA_URL_OUTPUT:
         default: ''
         required: false
@@ -145,6 +149,7 @@ runs:
               JIRA_PROJECT_KEY: ${{inputs.JIRA_PROJECT_KEY}}
               JIRA_TICKET_ID: ${{ github.event.ref }}
               JIRA_URL: ${{inputs.JIRA_URL}}
+              CONFLUENCE_URL: ${{inputs.CONFLUENCE_URL}}
               JIRA_URL_OUTPUT: ${{inputs.JIRA_URL_OUTPUT}}
               JIRA_EMAIL_OUTPUT: ${{inputs.JIRA_EMAIL_OUTPUT}}
               JIRA_API_TOKEN_OUTPUT: ${{inputs.JIRA_API_TOKEN_OUTPUT}}
